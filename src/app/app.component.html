@@ -1,0 +1,83 @@
+<div fxLayout="column" fxLayoutGap="20px" fxFlex.sm="100"
+  fxFlex.gt-sm="50"
+  fxFlexOffset.gt-sm="25" fxLayoutAlign="start strech" class="container">
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <h1>{{ 'Convertisseur Euro - Dollar' }}</h1>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      @if (euroToDollar()) {
+        <h2>Taux de change réel: 1 € = {{ reelExchangeRateEuroDollar() }} $</h2>
+      } @else { 
+        <h2>Taux de change réel: 1 $ = {{ reelExchangeRateDollarEuro() }} €</h2>
+      }
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+      <mat-button-toggle-group [value]="isFixedRate()" (change)="isFixedRate.set($event.value)" class="toggle-btn">
+        <mat-button-toggle [value]="false">Taux Variable</mat-button-toggle>
+        <mat-button-toggle [value]="true">Taux fixe</mat-button-toggle>
+      </mat-button-toggle-group>
+      @if (euroToDollar()) {
+        <mat-form-field [color]="'primary'" appearance="outline">
+          <mat-label>Taux fixe Euro -> Dollar</mat-label>
+          <input type="number" [ngModel]="fixedExchangeRateEuroDollar()" (ngModelChange)="fixedExchangeRateEuroDollar.set($event)" matInput >
+        </mat-form-field>
+      } @else { 
+        <mat-form-field [color]="'primary'" appearance="outline">
+          <mat-label>Taux fixe Dollar -> Euro</mat-label>
+          <input type="number" [ngModel]="fixedExchangeRateDollarEuro()" (ngModelChange)="fixedExchangeRateDollarEuro.set($event)" matInput >
+        </mat-form-field>
+      }
+    </div>
+    <div fxLayout="row" fxLayoutGap="20px">
+      @if (euroToDollar()) {
+        <mat-form-field [color]="'primary'" appearance="outline" fxFlex>
+          <mat-label>Euro</mat-label>
+          <input type="number" matInput type="number" [ngModel]="euro1()" (ngModelChange)="euro1.set($event)">
+        </mat-form-field>
+        <button mat-icon-button color="accent" (click)="switchCurrency()">
+          <mat-icon>sync_alt</mat-icon>
+        </button>
+        <mat-form-field [color]="'primary'" appearance="outline" fxFlex>
+          <mat-label>Dollar</mat-label>
+          <input type="number" matInput type="number" [ngModel]="dollar1()" readonly="true">
+        </mat-form-field>
+      } @else { 
+        <mat-form-field [color]="'primary'" appearance="outline" fxFlex>
+          <mat-label>Dollar 2</mat-label>
+          <input type="number" matInput type="number" [ngModel]="dollar2()" (ngModelChange)="dollar2.set($event)">
+        </mat-form-field>
+        <button mat-icon-button color="accent" (click)="switchCurrency()">
+          <mat-icon>sync_alt</mat-icon>
+        </button>
+        <mat-form-field [color]="'primary'" appearance="outline" fxFlex>
+          <mat-label>Euro 2</mat-label>
+          <input type="number" matInput type="number" [ngModel]="euro2()" readonly="true">
+        </mat-form-field>
+      }
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <h2>Historique des conversions</h2>
+    </div>
+    <div  class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort class="table-conversion">
+          <ng-container matColumnDef="reelExchangeRate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Taux de change réél (€ -> $)</th>
+            <td mat-cell *matCellDef="let conversion"> {{conversion?.reelExchangeRate}} </td>
+          </ng-container>
+          <ng-container matColumnDef="fixedExchangeRate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Taux de change fixe (€ -> $)</th>
+            <td mat-cell *matCellDef="let conversion"> {{conversion?.fixedExchangeRate}} </td>
+          </ng-container>
+          <ng-container matColumnDef="initialValue">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Valeur initiale</th>
+            <td mat-cell *matCellDef="let conversion"> {{conversion?.initialValue}} </td>
+          </ng-container>
+          <ng-container matColumnDef="convertedValue">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Valeur convertie</th>
+            <td mat-cell *matCellDef="let conversion"> {{conversion?.convertedValue}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row class="conversion-row" *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+</div>
